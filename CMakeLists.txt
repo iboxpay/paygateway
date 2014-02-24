@@ -114,7 +114,7 @@ if (NOT ${LIBEVENT_OPENSSL_FOUND})
 	set (EVHTP_DISABLE_SSL 1)
 endif(NOT ${LIBEVENT_OPENSSL_FOUND})
 
-set(ZIMG_SOURCES paymentclient.c)
+set(ZIMG_SOURCES main.c httpd.c paymentclient.c)
 
 if (NOT EVHTP_DISABLE_EVTHR)
 	set (ZIMG_EXTERNAL_LIBS ${ZIMG_EXTERNAL_LIBS} pthread)

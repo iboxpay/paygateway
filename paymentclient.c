@@ -80,6 +80,7 @@ static void payment_client(struct event_base* base) {
     event_add(ev_write, &tv);
 }
 
+#if 0
 int main(int argc, const char *argv[]) {
     struct event_base * base = 0;
 
@@ -90,4 +91,5 @@ int main(int argc, const char *argv[]) {
 
     return 0;
 }
+#endif
 

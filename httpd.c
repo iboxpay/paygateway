@@ -20,9 +20,9 @@
 
 static char *server_name = "PaymentGateway/1.0.0 (Unix)";
 
-static int print_headers(evhtp_header_t * header, void * arg);
+static int print_headers(evhtp_header_t* header, void* arg);
 
-static const char * method_strmap[] = {
+static const char* method_strmap[] = {
     "GET",
     "HEAD",
     "POST",
@@ -44,12 +44,12 @@ static const char * method_strmap[] = {
 
 
 /**
- * @brief dump_request_cb The callback of a dump request.
+ * @brief router_request_cb The callback of a dump request.
  *
  * @param req The request you want to dump.
  * @param arg It is not useful.
  */
-void dump_request_cb(evhtp_request_t *req, void *arg)
+void router_request_cb(evhtp_request_t *req, void *arg)
 {
     const char *uri = req->uri->path->full;
 

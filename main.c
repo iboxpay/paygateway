@@ -37,7 +37,7 @@ int main(int argc, const char* argv[]) {
 
     evhtp_t* htp = evhtp_new(evbase, NULL);
 
-    evhtp_set_cb(htp, "/dump", dump_request_cb, NULL);
+    evhtp_set_cb(htp, "/paygateway/api/ApiRequest", router_request_cb, NULL);
 #ifndef EVHTP_DISABLE_EVTHR
     evhtp_use_threads(htp, NULL, num_threads, NULL);
 #endif

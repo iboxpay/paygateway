@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 2.8)
-project(paymentgateway)
+project(paygateway)
 
 set(PROJECT_MAJOR_VERSION 1)
 set(PROJECT_MINOR_VERSION 0)
@@ -97,7 +97,7 @@ include_directories(
     ${ImageMagick_MagickWand_INCLUDE_DIR}
 )
 
-set(ZIMG_EXTERNAL_LIBS
+set(PAYGATEWAY_EXTERNAL_LIBS
 		${LIBEVENT_LIBRARY}
 		${LIBEVENT_PTHREADS_LIBRARY}
 		${LIBEVENT_OPENSSL_LIBRARY}
@@ -114,10 +114,10 @@ if (NOT ${LIBEVENT_OPENSSL_FOUND})
 	set (EVHTP_DISABLE_SSL 1)
 endif(NOT ${LIBEVENT_OPENSSL_FOUND})
 
-set(ZIMG_SOURCES main.c httpd.c paymentclient.c)
+set(PAYGATEWAY_SOURCES main.c httpd.c paymentclient.c)
 
 if (NOT EVHTP_DISABLE_EVTHR)
-	set (ZIMG_EXTERNAL_LIBS ${ZIMG_EXTERNAL_LIBS} pthread)
+	set (PAYGATEWAY_EXTERNAL_LIBS ${PAYGATEWAY_EXTERNAL_LIBS} pthread)
 endif(NOT EVHTP_DISABLE_EVTHR)
 
 if (NOT ${CMAKE_BUILD_TYPE} STREQUAL "Debug")
@@ -129,6 +129,6 @@ if (EVHTP_DISABLE_SSL)
 endif()
 
 set(CMAKE_EXE_LINKER_FLAGS "-L/usr/lib")
-add_executable(paymentgateway ${ZIMG_SOURCES})
-target_link_libraries(paymentgateway ${ZIMG_EXTERNAL_LIBS})
+add_executable(paygateway ${PAYGATEWAY_SOURCES})
+target_link_libraries(paygateway ${PAYGATEWAY_EXTERNAL_LIBS})
 

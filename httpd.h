@@ -23,7 +23,7 @@
 extern "C" {
 #endif
 
-void dump_request_cb(evhtp_request_t* req, void* arg);
+void router_request_cb(evhtp_request_t* req, void* arg);
 
 #ifdef __cplusplus
 }

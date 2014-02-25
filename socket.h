@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 
-#ifndef HTTPD_H
-#define HTTPD_H
+#ifndef SOCKET_H
+#define SOCKET_H
 
 #include <evhtp.h>
 
@@ -23,11 +23,11 @@
 extern "C" {
 #endif
 
-void frontend_request_cb(evhtp_request_t* req, void * arg);
+void router_request_cb(evhtp_request_t* req, void* arg);
 
 #ifdef __cplusplus
 }
 #endif
 
-#endif /* end of include guard: HTTP_H */
+#endif /* end of include guard: SOCKET_H */
 

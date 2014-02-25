@@ -15,88 +15,79 @@
  */
 
 #include <stdio.h>
-
 #include "httpd.h"
 
-static char *server_name = "PayGateway/1.0.0 (Unix)";
+static int make_http_request(evbase_t* evbase,
+             evthr_t* evthr,
+             const char* const host,
+             const short port,
+             const char* const path,
+             evhtp_headers_t* headers,
+             evhtp_callback_cb  cb,
+             void* arg) {
+    evhtp_connection_t * conn;
+    evhtp_request_t    * request;
 
-static int print_headers(evhtp_header_t* header, void* arg);
+    conn         = evhtp_connection_new(evbase, host, port);
+    conn->thread = evthr;
+    request      = evhtp_request_new(cb, arg);
 
-static const char* method_strmap[] = {
-    "GET",
-    "HEAD",
-    "POST",
-    "PUT",
-    "DELETE",
-    "MKCOL",
-    "COPY",
-    "MOVE",
-    "OPTIONS",
-    "PROPFIND",
-    "PROPATCH",
-    "LOCK",
-    "UNLOCK",
-    "TRACE",
-    "CONNECT",
-    "PATCH",
-    "UNKNOWN",
-};
+    evhtp_headers_add_header(request->headers_out,
+                             evhtp_header_new("Host", "localhost", 0, 0));
+    evhtp_headers_add_header(request->headers_out,
+                             evhtp_header_new("User-Agent", "libevhtp", 0, 0));
+    evhtp_headers_add_header(request->headers_out,
+                             evhtp_header_new("Connection", "close", 0, 0));
 
+    evhtp_headers_add_headers(request->headers_out, headers);
+
+    printf("Making backend request...\n");
+    evhtp_make_request(conn, request, htp_method_GET, path);
+    printf("Ok.\n");
+
+    return 0;
+}
+
+static void http_backend_cb(evhtp_request_t * backend_req, void * arg) {
+    evhtp_request_t * frontend_req = (evhtp_request_t *)arg;
+
+    evbuffer_prepend_buffer(frontend_req->buffer_out, backend_req->buffer_in);
+    evhtp_headers_add_headers(frontend_req->headers_out, backend_req->headers_in);
+
+    /*
+     * char body[1024] = { '\0' };
+     * ev_ssize_t len = evbuffer_copyout(frontend_req->buffer_out, body, sizeof(body));
+     * printf("Backend %zu: %s\n", len, body);
+     */
+
+    evhtp_send_reply(frontend_req, EVHTP_RES_OK);
+    evhtp_request_resume(frontend_req);
+}
 
 /**
- * @brief router_request_cb The callback of a router request.
+ * @brief frontend_request_cb The callback of a frontend request.
  *
  * @param req The request you want to dump.
  * @param arg It is not useful.
  */
-void router_request_cb(evhtp_request_t *req, void *arg)
-{
-    const char *uri = req->uri->path->full;
+void frontend_request_cb(evhtp_request_t* req, void* arg) {
+    int * aux;
+    int   thr;
 
-    int req_method = evhtp_request_get_method(req);
-    if (req_method >= 16) {
-        req_method = 16;
-    }
+    aux = (int *)evthr_get_aux(req->conn->thread);
+    thr = *aux;
 
-    //LOG_PRINT(LOG_INFO, "Received a %s request for %s", method_strmap[req_method], uri);
-    evbuffer_add_printf(req->buffer_out, "uri : %s\r\n", uri);
-    evbuffer_add_printf(req->buffer_out, "query : %s\r\n", req->uri->query_raw);
-    evhtp_headers_for_each(req->uri->query, print_headers, req->buffer_out);
-    evbuffer_add_printf(req->buffer_out, "Method : %s\n", method_strmap[req_method]);
-    evhtp_headers_for_each(req->headers_in, print_headers, req->buffer_out);
+    printf("  Received frontend request on thread %d... ", thr);
 
-    evbuf_t *buf = req->buffer_in;
-    puts("Input data: <<<");
-    while (evbuffer_get_length(buf)) {
-        int n;
-        char cbuf[128];
-        n = evbuffer_remove(buf, cbuf, sizeof(buf)-1);
-        if (n > 0)
-            (void) fwrite(cbuf, 1, n, stdout);
-    }
-    puts(">>>");
+    /* Pause the frontend request while we run the backend requests. */
+    evhtp_request_pause(req);
 
-    //evhtp_headers_add_header(req->headers_out, evhtp_header_new("Server", "zimg/1.0.0 (Unix) (OpenSUSE/Linux)", 0, 0));
-    evhtp_headers_add_header(req->headers_out, evhtp_header_new("Server", server_name, 0, 0));
-    evhtp_headers_add_header(req->headers_out, evhtp_header_new("Content-Type", "text/plain", 0, 0));
-    evhtp_send_reply(req, EVHTP_RES_OK);
-}
+    make_http_request(evthr_get_base(req->conn->thread),
+                 req->conn->thread,
+                 "127.0.0.1", 8000,
+                 req->uri->path->full,
+                 req->headers_in, http_backend_cb, req);
 
-/**
- * @brief print_headers It displays all headers and values.
- *
- * @param header The header of a request.
- * @param arg The evbuff you want to store the k-v string.
- *
- * @return It always return 1 for success.
- */
-static int print_headers(evhtp_header_t * header, void * arg) {
-    evbuf_t * buf = arg;
-
-    evbuffer_add(buf, header->key, header->klen);
-    evbuffer_add(buf, ": ", 2);
-    evbuffer_add(buf, header->val, header->vlen);
-    evbuffer_add(buf, "\r\n", 2);
-    return 1;
+    printf("Ok.\n");
 }
 

@@ -18,7 +18,7 @@
 
 #include "httpd.h"
 
-static char *server_name = "PaymentGateway/1.0.0 (Unix)";
+static char *server_name = "PayGateway/1.0.0 (Unix)";
 
 static int print_headers(evhtp_header_t* header, void* arg);
 
@@ -44,7 +44,7 @@ static const char* method_strmap[] = {
 
 
 /**
- * @brief router_request_cb The callback of a dump request.
+ * @brief router_request_cb The callback of a router request.
  *
  * @param req The request you want to dump.
  * @param arg It is not useful.
@@ -65,7 +65,7 @@ void router_request_cb(evhtp_request_t *req, void *arg)
     evbuffer_add_printf(req->buffer_out, "Method : %s\n", method_strmap[req_method]);
     evhtp_headers_for_each(req->headers_in, print_headers, req->buffer_out);
 
-    evbuf_t *buf = req->buffer_in;;
+    evbuf_t *buf = req->buffer_in;
     puts("Input data: <<<");
     while (evbuffer_get_length(buf)) {
         int n;

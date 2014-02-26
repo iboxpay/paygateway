@@ -77,6 +77,7 @@ message("Rel CFLAGS: ${CMAKE_C_FLAGS_RELEASE}")
 find_package(LibEvent REQUIRED)
 find_package(OpenSSL)
 find_package(libevhtp REQUIRED)
+ find_package(Protobuf REQUIRED)
 
 find_path(LIBEVENT_INCLUDE_DIR event2/event.h REQUIRED)
 
@@ -94,7 +95,7 @@ include_directories(
 	${CMAKE_CURRENT_SOURCE_DIR}
 	${OPENSSL_INCLUDE_DIR}
 	${LIBEVENT_INCLUDE_DIR}
-    ${ImageMagick_MagickWand_INCLUDE_DIR}
+	${PROTOBUF_INCLUDE_DIRS}
 )
 
 set(PAYGATEWAY_EXTERNAL_LIBS
@@ -104,7 +105,10 @@ set(PAYGATEWAY_EXTERNAL_LIBS
 		${OPENSSL_LIBRARIES}
         ${LIBEVHTP_LIBRARY}
         ${LIBEVENT_LIBRARY}
+		${PROTOBUF_LIBRARIES}
 )
+
+PROTOBUF_GENERATE_CPP(PROTO_SRCS PROTO_HDRS iboxpay.payment.proto)
 
 if (NOT ${LIBEVENT_PTHREADS_FOUND})
 	set(EVHTP_DISABLE_EVTHR 1)
@@ -114,7 +118,7 @@ if (NOT ${LIBEVENT_OPENSSL_FOUND})
 	set (EVHTP_DISABLE_SSL 1)
 endif(NOT ${LIBEVENT_OPENSSL_FOUND})
 
-set(PAYGATEWAY_SOURCES main.c socket.c httpd.c init_daemon.c)
+set(PAYGATEWAY_SOURCES main.cc socket.cc httpd.cc init_daemon.cc iboxpay.payment.pb.cc)
 
 if (NOT EVHTP_DISABLE_EVTHR)
 	set (PAYGATEWAY_EXTERNAL_LIBS ${PAYGATEWAY_EXTERNAL_LIBS} pthread)

@@ -36,7 +36,7 @@ int httpd_option_timeout = 120; //in seconds
 /* Terminate gracefully on SIGTERM */
 void sigterm_cb(int fd, short event, void * arg) {
     evbase_t     * evbase = (evbase_t *)arg;
-    struct timeval tv     = { .tv_usec = 100000, .tv_sec = 0 }; /* 100 ms */
+    struct timeval tv     = { 100000, 0 }; /* 100 ms */
 
     event_base_loopexit(evbase, &tv);
 }

@@ -27,7 +27,7 @@
 
 #define PAYMENT_PORT 8000
 #define PAYMENT_SERVER "127.0.0.1"
-static char *server_name = "PayGateway/1.0.0 (Unix)";
+static const char *server_name = "PayGateway/1.0.0 (Unix)";
 
 struct payment_context {
     const char* payment_contents;
@@ -115,7 +115,6 @@ void router_request_cb(evhtp_request_t* req, void* arg) {
 
     printf("  Received router request on thread %d... ", thr);
 
-
     evbuf_t *buf = req->buffer_in;;
     puts("Input data: <<<");
     while (evbuffer_get_length(buf)) {
@@ -157,7 +156,7 @@ void router_request_cb(evhtp_request_t* req, void* arg) {
  */
 static int print_headers(evhtp_header_t * header, void * arg)
 {
-    evbuf_t * buf = arg;
+    evbuf_t * buf = (evbuf_t* )arg;
 
     evbuffer_add(buf, header->key, header->klen);
     evbuffer_add(buf, ": ", 2);

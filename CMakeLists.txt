@@ -118,7 +118,7 @@ if (NOT ${LIBEVENT_OPENSSL_FOUND})
 	set (EVHTP_DISABLE_SSL 1)
 endif(NOT ${LIBEVENT_OPENSSL_FOUND})
 
-set(PAYGATEWAY_SOURCES main.cc socket.cc httpd.cc init_daemon.cc  ${PROTO_SRCS} ${PROTO_HDRS})
+set(PAYGATEWAY_SOURCES main.cc socket.cc httpd.cc init_daemon.cc  src/base/base64.cpp ${PROTO_SRCS} ${PROTO_HDRS})
 
 if (NOT EVHTP_DISABLE_EVTHR)
 	set (PAYGATEWAY_EXTERNAL_LIBS ${PAYGATEWAY_EXTERNAL_LIBS} pthread)

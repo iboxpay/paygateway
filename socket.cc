@@ -24,6 +24,7 @@
 #include <arpa/inet.h>
 #include <sys/socket.h>
 #include "socket.h"
+#include "src/base/base64.h"
 
 #define PAYMENT_PORT 8000
 #define PAYMENT_SERVER "127.0.0.1"

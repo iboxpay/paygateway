@@ -6,10 +6,10 @@ import sys
 import base64
 import gzip
 import StringIO
-import payment_pb2
+import cup_payment_pb2
 from google.protobuf import text_format
 
-sale_req = payment_pb2.SaleRequest()
+sale_req = cup_payment_pb2.SaleRequest()
 sale_req.cmdType		= 1
 sale_req.signType		= 2
 sale_req.terminalNo 		= "03434324234" 

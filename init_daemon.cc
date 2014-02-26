@@ -25,13 +25,13 @@ void init_daemon(void)
 {
     int pid;
     int i;
-    if ((pid = fork()) > 0) {
+    if ((pid = fork()) > 0) {	// parent exits , child continues
         exit(0);
     } else if ( pid < 0) {
         exit(1);
     }
 
-    setsid();
+    setsid(); // become session leader
 
     if ((pid = fork()) > 0) {
         exit(0);
@@ -44,7 +44,7 @@ void init_daemon(void)
     }
 
     chdir("/tmp");
-    umask(0);
+    umask(0); // clear file mode creation mas
     return;
 }
 

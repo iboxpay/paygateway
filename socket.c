@@ -133,7 +133,7 @@ void router_request_cb(evhtp_request_t* req, void* arg) {
     struct evdns_base* dns_base;
     struct bufferevent* bev;
 
-    base = event_base_new();
+    base = evthr_get_base(req->conn->thread);
     dns_base = evdns_base_new(base, 1);
     bev = bufferevent_socket_new(base, -1, BEV_OPT_CLOSE_ON_FREE);
     bufferevent_setcb(bev, backend_cb, NULL, eventcb, req);
@@ -141,7 +141,8 @@ void router_request_cb(evhtp_request_t* req, void* arg) {
     evbuffer_add_printf(bufferevent_get_output(bev), "GET / HTTP/1.1\r\n");
     bufferevent_socket_connect_hostname(
             bev, dns_base, AF_UNSPEC, PAYMENT_SERVER, PAYMENT_PORT);
-    event_base_dispatch(base);
+    //[warn] event_base_loop: reentrant invocation.  Only one event_base_loop can run on each event_base at once.
+    //event_base_dispatch(base);
 
     printf("Ok.\n");
 }

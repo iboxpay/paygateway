@@ -22,10 +22,16 @@
 #include "httpd.h"
 #include "socket.h"
 
+extern void init_daemon(void);
+
 int num_threads = 4;
 uint64_t max_keepalives = 60;
 int backlog = 1024;
-int port = 8081;
+
+char* httpd_option_listen = "0.0.0.0";
+int httpd_option_port = 8080;
+int httpd_option_daemon = 0;
+int httpd_option_timeout = 120; //in seconds
 
 /* Terminate gracefully on SIGTERM */
 void sigterm_cb(int fd, short event, void * arg) {
@@ -42,8 +48,16 @@ void init_thread_cb(evhtp_t * htp, evthr_t * thr, void * arg) {
     evthr_set_aux(thr, &aux);
 }
 
-int main(int argc, const char* argv[]) {
+int parse_args(int argc, char** argv);
+
+int main(int argc, char** argv) {
     struct event* ev_sigterm;
+
+    parse_args(argc, argv);
+
+    if (httpd_option_daemon) {
+        init_daemon();
+    }
 
     evbase_t* evbase = event_base_new();
 
@@ -57,7 +71,7 @@ int main(int argc, const char* argv[]) {
     evsignal_add(ev_sigterm, NULL);
 
     evhtp_set_max_keepalive_requests(htp, max_keepalives);
-    evhtp_bind_socket(htp, "0.0.0.0", port, backlog);
+    evhtp_bind_socket(htp, httpd_option_listen, httpd_option_port, backlog);
     event_base_loop(evbase, 0);
 
     event_free(ev_sigterm);
@@ -67,6 +81,42 @@ int main(int argc, const char* argv[]) {
     event_base_free(evbase);
 
     fprintf(stdout, "\nClean exit!\n");
+    return 0;
+}
+void show_help() {
+    const char* help = "PayGateway server.\n\n"
+        "-l <ip_addr> interface to listen on, default is 0.0.0.0\n"
+        "-p <num>     port number to listen on, default is 8080\n"
+        "-d           run as a deamon\n"
+        "-t <second>  timeout for a http request, default is 120 seconds\n"
+        "-h           print this help and exit\n"
+        "\n";
+    fprintf(stderr, "%s", help);
+}
+
+int parse_args(int argc, char** argv) {
+    int c;
+    while ((c = getopt(argc, argv, "l:p:dt:h")) != -1) {
+        switch (c) {
+            case 'l' :
+                httpd_option_listen = optarg;
+                break;
+            case 'p' :
+                httpd_option_port = atoi(optarg);
+                break;
+            case 'd' :
+                httpd_option_daemon = 1;
+                break;
+            case 't' :
+                httpd_option_timeout = atoi(optarg);
+                break;
+            case 'h' :
+            default :
+                show_help();
+                exit(EXIT_SUCCESS);
+        }
+    }
+
     return 0;
 }
 

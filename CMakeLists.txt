@@ -114,7 +114,7 @@ if (NOT ${LIBEVENT_OPENSSL_FOUND})
 	set (EVHTP_DISABLE_SSL 1)
 endif(NOT ${LIBEVENT_OPENSSL_FOUND})
 
-set(PAYGATEWAY_SOURCES main.c socket.c httpd.c)
+set(PAYGATEWAY_SOURCES main.c socket.c httpd.c init_daemon.c)
 
 if (NOT EVHTP_DISABLE_EVTHR)
 	set (PAYGATEWAY_EXTERNAL_LIBS ${PAYGATEWAY_EXTERNAL_LIBS} pthread)

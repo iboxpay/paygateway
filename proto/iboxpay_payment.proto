@@ -4,28 +4,28 @@ option java_package = "com.iboxpay.payment";
 option java_outer_classname = "CreditPaymentProtos";
 
 // 信用卡还款
-message CreditPayment {
-    required int32  tran_type		= 1;	// 交易类型0x01为充值，0x02为冲正，0x03撤销
-    required string cardno			= 2;	// 信用卡号
-    required string track_info 		= 3;	// 磁道信息(RSQ加密)
-    required string account 		= 4;  	// 订单金额
-    required string pry_curn 		= 5;	// 货币类型（币种）
-    required string order_no 		= 6;	// 订单流水号
-    required int32  encrypt_type 	= 7;    // 加密方式
-    required string ibox_no 		= 8;	// 盒子ID
-    required string merchant_no 	= 9;	// 商户号
-    required string pin_info 		= 10;	// PIN信息(RSA加密)
+message CreditPaymentRequest {
+    required int32  tran_type    = 1;  // 交易类型0x01为充值，0x02为冲正，0x03撤销
+    required string cardno       = 2;  // 信用卡号
+    required string track_info   = 3;  // 磁道信息(RSQ加密)
+    required string account      = 4;  // 订单金额
+    required string pry_curn     = 5;  // 货币类型（币种）
+    required string order_no     = 6;  // 订单流水号
+    required int32  encrypt_type = 7;  // 加密方式
+    required string ibox_no      = 8;  // 盒子ID
+    required string merchant_no  = 9;  // 商户号
+    required string pin_info     = 10; // PIN信息(RSA加密)
 }
 
 // 取随机数
-message Random {
+message RandomRequest {
     required string ibox_no = 1;     // 盒子号(ID)
     required string merchant_no = 2; // 商户号
 }
 
 // 签到
-message SignIn {
-    required string ibox_no = 1;     // 盒子号(ID)
+message SignInRequest {
+    required string ibox_no     = 1; // 盒子号(ID)
     required string merchant_no = 2; // 商户号
 }
 

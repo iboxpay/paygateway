@@ -21,17 +21,16 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 
-void init_daemon(void)
-{
+void init_daemon(void) {
     int pid;
     int i;
-    if ((pid = fork()) > 0) {	// parent exits , child continues
+    if ((pid=fork()) > 0) {  // parent exits , child continues
         exit(0);
-    } else if ( pid < 0) {
+    } else if (pid < 0) {
         exit(1);
     }
 
-    setsid(); // become session leader
+    setsid();   // become session leader
 
     if ((pid = fork()) > 0) {
         exit(0);
@@ -39,12 +38,12 @@ void init_daemon(void)
         exit(1);
     }
 
-    for (i=0; i< NOFILE; ++i) {
+    for (i = 0; i < NOFILE; ++i) {
         close(i);
     }
 
     chdir("/tmp");
-    umask(0); // clear file mode creation mas
+    umask(0);   // clear file mode creation mas
     return;
 }
 

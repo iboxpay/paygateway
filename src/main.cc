@@ -31,7 +31,7 @@ int backlog = 1024;
 char* httpd_option_listen = "0.0.0.0";
 int httpd_option_port = 8080;
 int httpd_option_daemon = 0;
-int httpd_option_timeout = 120; //in seconds
+int httpd_option_timeout = 120;  // in seconds
 
 /* Terminate gracefully on SIGTERM */
 void sigterm_cb(int fd, short event, void * arg) {

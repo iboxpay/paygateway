@@ -25,6 +25,7 @@
 #include <sys/socket.h>
 
 #include <iostream>
+#include <string>
 
 #include "socket.h"
 #include "cup_payment.pb.h"
@@ -64,12 +65,11 @@ static int print_headers(evhtp_header_t * header, void * arg);
 
 static int make_socket_request(evbase_t* base,
              const char* const host,
-             const short port,
+             const int port,
              const char* data,
              bufferevent_data_cb read_cb,
              bufferevent_event_cb event_cb,
              void* ctx) {
-
     struct evdns_base* dns_base;
     struct bufferevent* bev;
 
@@ -169,9 +169,8 @@ void router_request_cb(evhtp_request_t* req, void* arg) {
  *
  * @return It always return 1 for success.
  */
-static int print_headers(evhtp_header_t * header, void * arg)
-{
-    evbuf_t * buf = (evbuf_t* )arg;
+static int print_headers(evhtp_header_t * header, void * arg) {
+    evbuf_t* buf = (evbuf_t*)arg;
 
     evbuffer_add(buf, header->key, header->klen);
     evbuffer_add(buf, ": ", 2);

@@ -10,6 +10,12 @@ Current Features
 * Use Google protobuf protocols
 * Use vhtp,libevent library
 
+TODO
+* ISO8583 message pack and unpack
+* Add more proto file
+* multi-thread test
+* Add queue.
+
 Install in Linux/Mac OS
 ------------
 Make sure your cmake version >= 2.8

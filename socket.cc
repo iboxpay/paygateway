@@ -68,15 +68,6 @@ static void backend_cb(struct bufferevent* bev, void* ctx) {
         req_method = 16;
     }
 
-    struct evbuffer* output = bufferevent_get_output(bev);
-    struct evbuffer* input = bufferevent_get_input(bev);
-
-    size_t input_len = evbuffer_get_length(input);
-    printf("input_len: %zu\n", input_len);
-
-    size_t output_len1 = evbuffer_get_length(output);
-    printf("output_len1: %zu\n\n", output_len1);
-
     evbuffer_add_printf(req->buffer_out, "uri : %s\r\n", uri);
     evbuffer_add_printf(req->buffer_out, "query : %s\r\n", req->uri->query_raw);
     evhtp_headers_for_each(req->uri->query, print_headers, req->buffer_out);
@@ -116,15 +107,11 @@ void router_request_cb(evhtp_request_t* req, void* arg) {
 
     printf("  Received router request on thread %d... ", thr);
 
-    evbuf_t *buf = req->buffer_in;;
     puts("Input data: <<<");
-    while (evbuffer_get_length(buf)) {
-        int n;
-        char cbuf[128];
-        n = evbuffer_remove(buf, cbuf, sizeof(buf)-1);
-        if (n > 0)
-            (void) fwrite(cbuf, 1, n, stdout);
-    }
+    const char* version = evhtp_kv_find(req->uri->query, "version");
+    const char* request = evhtp_kv_find(req->uri->query, "request");
+    printf("%s\n", version);
+    printf("%s\n", request);
 
     /* Pause the router request while we run the backend requests. */
     evhtp_request_pause(req);

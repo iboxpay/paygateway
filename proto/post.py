@@ -34,10 +34,10 @@ payment_headers = {
         "Connection": "keep-alive"
 }
 
-paymentform_data = "version=2&request=" + requestData
+payment_data = "version=2&request=" + requestData
 
 conn = httplib.HTTPConnection("127.0.0.1:8080")
-conn.request("POST", "/paygateway/api/ApiRequest", paymentform_data, payment_headers)
+conn.request("POST", "/paygateway/api/ApiRequest", payment_data, payment_headers)
 
 response = conn.getresponse()
 

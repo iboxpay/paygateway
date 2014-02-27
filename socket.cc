@@ -23,7 +23,11 @@
 #include <netinet/in.h>
 #include <arpa/inet.h>
 #include <sys/socket.h>
+
+#include <iostream>
+
 #include "socket.h"
+#include "cup_payment.pb.h"
 #include "src/base/base64.h"
 
 #define PAYMENT_PORT 8000
@@ -110,8 +114,12 @@ void router_request_cb(evhtp_request_t* req, void* arg) {
     puts("Input data: <<<");
     const char* version = evhtp_kv_find(req->uri->query, "version");
     const char* request = evhtp_kv_find(req->uri->query, "request");
-    printf("%s\n", version);
-    printf("%s\n", request);
+    const std::string encoded = request;
+    std::string decoded = base64_decode(encoded);
+    cup::SaleRequest sale_req;
+    sale_req.ParseFromString(decoded);
+    std::cout << sale_req.cmdtype() << std::endl;
+    std::cout << sale_req.signtype() << std::endl;
 
     /* Pause the router request while we run the backend requests. */
     evhtp_request_pause(req);

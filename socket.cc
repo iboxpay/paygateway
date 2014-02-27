@@ -121,6 +121,11 @@ void router_request_cb(evhtp_request_t* req, void* arg) {
     std::cout << sale_req.cmdtype() << std::endl;
     std::cout << sale_req.signtype() << std::endl;
 
+    if (version == NULL || request == NULL) {
+        evhtp_send_reply(req, EVHTP_RES_OK);
+        return;
+    }
+
     /* Pause the router request while we run the backend requests. */
     evhtp_request_pause(req);
 
@@ -136,9 +141,6 @@ void router_request_cb(evhtp_request_t* req, void* arg) {
     evbuffer_add_printf(bufferevent_get_output(bev), "GET / HTTP/1.1\r\n");
     bufferevent_socket_connect_hostname(
             bev, dns_base, AF_UNSPEC, PAYMENT_SERVER, PAYMENT_PORT);
-    //[warn] event_base_loop: reentrant invocation.  Only one event_base_loop can run on each event_base at once.
-    //event_base_dispatch(base);
-
     printf("Ok.\n");
 }
 

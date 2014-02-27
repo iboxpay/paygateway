@@ -62,6 +62,27 @@ static const char * method_strmap[] = {
 
 static int print_headers(evhtp_header_t * header, void * arg);
 
+static int make_socket_request(evbase_t* base,
+             const char* const host,
+             const short port,
+             const char* data,
+             bufferevent_data_cb read_cb,
+             bufferevent_event_cb event_cb,
+             void* ctx) {
+
+    struct evdns_base* dns_base;
+    struct bufferevent* bev;
+
+    dns_base = evdns_base_new(base, 1);
+    bev = bufferevent_socket_new(base, -1, BEV_OPT_CLOSE_ON_FREE);
+    bufferevent_setcb(bev, read_cb, NULL, event_cb, ctx);
+    bufferevent_enable(bev, EV_READ|EV_WRITE);
+    evbuffer_add_printf(bufferevent_get_output(bev), "%s", data);
+    bufferevent_socket_connect_hostname(
+            bev, dns_base, AF_UNSPEC, host, port);
+    return 0;
+}
+
 static void backend_cb(struct bufferevent* bev, void* ctx) {
     evhtp_request_t* req = (evhtp_request_t *)ctx;
 
@@ -134,18 +155,9 @@ void router_request_cb(evhtp_request_t* req, void* arg) {
     /* Pause the router request while we run the backend requests. */
     evhtp_request_pause(req);
 
-    struct event_base* base;
-    struct evdns_base* dns_base;
-    struct bufferevent* bev;
-
-    base = evthr_get_base(req->conn->thread);
-    dns_base = evdns_base_new(base, 1);
-    bev = bufferevent_socket_new(base, -1, BEV_OPT_CLOSE_ON_FREE);
-    bufferevent_setcb(bev, backend_cb, NULL, eventcb, req);
-    bufferevent_enable(bev, EV_READ|EV_WRITE);
-    evbuffer_add_printf(bufferevent_get_output(bev), "GET / HTTP/1.1\r\n");
-    bufferevent_socket_connect_hostname(
-            bev, dns_base, AF_UNSPEC, PAYMENT_SERVER, PAYMENT_PORT);
+    make_socket_request(evthr_get_base(req->conn->thread), PAYMENT_SERVER, PAYMENT_PORT,
+            "GET / HTTP/1.1\r\n",
+            backend_cb, eventcb, req);
     printf("Ok.\n");
 }
 

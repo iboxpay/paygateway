@@ -65,7 +65,7 @@ static int print_headers(evhtp_header_t * header, void * arg);
 
 static int make_socket_request(evbase_t* base,
              const char* const host,
-             const int port,
+             unsigned short port,
              const char* data,
              bufferevent_data_cb read_cb,
              bufferevent_event_cb event_cb,
@@ -103,6 +103,7 @@ static void backend_cb(struct bufferevent* bev, void* ctx) {
 
     evhtp_headers_add_header(req->headers_out, evhtp_header_new("Server", server_name, 0, 0));
     evhtp_headers_add_header(req->headers_out, evhtp_header_new("Content-Type", "text/plain", 0, 0));
+    evhtp_headers_add_header(req->headers_out, evhtp_header_new("Connection", "keep-alive", 0, 0));
 
     evhtp_send_reply(req, EVHTP_RES_OK);
     evhtp_request_resume(req);
@@ -140,6 +141,14 @@ void router_request_cb(evhtp_request_t* req, void* arg) {
     puts("Input data: <<<");
     const char* version = evhtp_kv_find(req->uri->query, "version");
     const char* request = evhtp_kv_find(req->uri->query, "request");
+
+    if (version == NULL || request == NULL) {
+        evhtp_send_reply(req, EVHTP_RES_OK);
+        return;
+    }
+
+    std::cout << version << std::endl;
+
     const std::string encoded = request;
     std::string decoded = base64_decode(encoded);
     cup::SaleRequest sale_req;
@@ -147,10 +156,6 @@ void router_request_cb(evhtp_request_t* req, void* arg) {
     std::cout << sale_req.cmdtype() << std::endl;
     std::cout << sale_req.signtype() << std::endl;
 
-    if (version == NULL || request == NULL) {
-        evhtp_send_reply(req, EVHTP_RES_OK);
-        return;
-    }
 
     /* Pause the router request while we run the backend requests. */
     evhtp_request_pause(req);

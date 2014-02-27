@@ -28,7 +28,7 @@ int num_threads = 4;
 uint64_t max_keepalives = 60;
 int backlog = 1024;
 
-char* httpd_option_listen = "0.0.0.0";
+char httpd_option_listen[32] = "0.0.0.0";
 int httpd_option_port = 8080;
 int httpd_option_daemon = 0;
 int httpd_option_timeout = 120;  // in seconds
@@ -63,7 +63,7 @@ int main(int argc, char** argv) {
 
     evhtp_t* htp = evhtp_new(evbase, NULL);
 
-    evhtp_set_cb(htp, "/paygateway/api/Forward", frontend_request_cb, NULL);
+    evhtp_set_cb(htp, "/", frontend_request_cb, NULL);
     evhtp_set_cb(htp, "/paygateway/api/ApiRequest", router_request_cb, NULL);
     evhtp_use_threads(htp, init_thread_cb, num_threads, NULL);
 
@@ -100,7 +100,7 @@ int parse_args(int argc, char** argv) {
     while ((c = getopt(argc, argv, "l:p:dt:h")) != -1) {
         switch (c) {
             case 'l' :
-                httpd_option_listen = optarg;
+                strncpy(httpd_option_listen, optarg, sizeof(httpd_option_listen));
                 break;
             case 'p' :
                 httpd_option_port = atoi(optarg);

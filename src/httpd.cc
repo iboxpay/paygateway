@@ -20,7 +20,7 @@
 static int make_http_request(evbase_t* evbase,
              evthr_t* evthr,
              const char* const host,
-             const short port,
+             unsigned short port,
              const char* const path,
              evhtp_headers_t* headers,
              evhtp_callback_cb  cb,

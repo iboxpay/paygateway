@@ -91,6 +91,11 @@ static void eventcb(struct bufferevent* bev, short events, void* ctx) {
     if (events & BEV_EVENT_CONNECTED) {
         printf("Connect okay.\n");
     } else if (events & (BEV_EVENT_ERROR|BEV_EVENT_EOF)) {
+        int err = bufferevent_socket_get_dns_error(bev);
+        if (err) {
+            printf("DNS error: %s\n", evutil_gai_strerror(err));
+        }
+
         printf("Closing\n");
         bufferevent_free(bev);
     }

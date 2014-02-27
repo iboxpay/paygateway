@@ -83,6 +83,7 @@ int main(int argc, char** argv) {
     fprintf(stdout, "\nClean exit!\n");
     return 0;
 }
+
 void show_help() {
     const char* help = "PayGateway server.\n\n"
         "-l <ip_addr> interface to listen on, default is 0.0.0.0\n"

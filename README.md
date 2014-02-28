@@ -13,7 +13,6 @@ Current Features
 TODO
 * ISO8583 message pack and unpack
 * Add more proto file
-* multi-thread test
 * Add queue.
 
 Install in Linux/Mac OS

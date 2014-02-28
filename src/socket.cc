@@ -35,12 +35,6 @@
 #define PAYMENT_SERVER "127.0.0.1"
 static const char *server_name = "PayGateway/1.0.0 (Unix)";
 
-struct payment_context {
-    const char* payment_contents;
-    int payment_contents_len;
-    int recved;
-};
-
 static const char * method_strmap[] = {
     "GET",
     "HEAD",
@@ -79,9 +73,9 @@ static int make_socket_request(evbase_t* base,
     bufferevent_setcb(bev, read_cb, NULL, event_cb, ctx);
 
     //  Set timeout.
-    tv.tv_sec = 30;
-    tv.tv_usec = 0;
-    bufferevent_set_timeouts(bev, &tv, NULL);
+    /* tv.tv_sec = 30; */
+    /* tv.tv_usec = 0; */
+    /* bufferevent_set_timeouts(bev, &tv, NULL); */
 
     bufferevent_enable(bev, EV_READ|EV_WRITE);
     evbuffer_add_printf(bufferevent_get_output(bev), "%s", data);
@@ -110,7 +104,7 @@ static void backend_cb(struct bufferevent* bev, void* ctx) {
 
     evhtp_headers_add_header(req->headers_out, evhtp_header_new("Server", server_name, 0, 0));
     evhtp_headers_add_header(req->headers_out, evhtp_header_new("Content-Type", "text/plain", 0, 0));
-    evhtp_headers_add_header(req->headers_out, evhtp_header_new("Connection", "keep-alive", 0, 0));
+    evhtp_headers_add_header(req->headers_out, evhtp_header_new("Connection", "Keep-Alive", 0, 0));
 
     evhtp_send_reply(req, EVHTP_RES_OK);
     evhtp_request_resume(req);

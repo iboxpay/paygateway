@@ -16,6 +16,7 @@
 
 #include <unistd.h>
 #include <signal.h>
+#include <assert.h>
 #include <evhtp.h>
 #include <event2/event.h>
 
@@ -60,6 +61,7 @@ int main(int argc, char** argv) {
     }
 
     evbase_t* evbase = event_base_new();
+    assert(evbase != NULL);
 
     evhtp_t* htp = evhtp_new(evbase, NULL);
 

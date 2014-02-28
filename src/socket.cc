@@ -117,6 +117,8 @@ static void backend_cb(struct bufferevent* bev, void* ctx) {
 }
 
 static void eventcb(struct bufferevent* bev, short events, void* ctx) {
+    int finished = 0;
+
     if (events & BEV_EVENT_CONNECTED) {
         printf("Connect okay.\n");
     } else if (events & (BEV_EVENT_ERROR|BEV_EVENT_EOF)) {
@@ -124,8 +126,14 @@ static void eventcb(struct bufferevent* bev, short events, void* ctx) {
         if (err) {
             printf("DNS error: %s\n", evutil_gai_strerror(err));
         }
-
+        finished = 1;
         printf("Closing\n");
+    } else if (events & BEV_EVENT_TIMEOUT) {
+        finished = 1;
+        printf("Timed out\n");
+    }
+
+    if (finished) {
         bufferevent_free(bev);
     }
 }

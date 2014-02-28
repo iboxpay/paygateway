@@ -1,3 +1,4 @@
+
 PROTOBUF_GENERATE_CPP(PROTO_SRCS PROTO_HDRS ../proto/cup_payment.proto)
 
 set(PAYGATEWAY_SOURCES main.cc socket.cc httpd.cc init_daemon.cc  base/base64.cpp ${PROTO_SRCS} ${PROTO_HDRS})

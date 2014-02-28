@@ -70,12 +70,19 @@ static int make_socket_request(evbase_t* base,
              bufferevent_data_cb read_cb,
              bufferevent_event_cb event_cb,
              void* ctx) {
+    struct timeval tv;
     struct evdns_base* dns_base;
     struct bufferevent* bev;
 
     dns_base = evdns_base_new(base, 1);
     bev = bufferevent_socket_new(base, -1, BEV_OPT_CLOSE_ON_FREE);
     bufferevent_setcb(bev, read_cb, NULL, event_cb, ctx);
+
+    //  Set timeout.
+    tv.tv_sec = 30;
+    tv.tv_usec = 0;
+    bufferevent_set_timeouts(bev, &tv, NULL);
+
     bufferevent_enable(bev, EV_READ|EV_WRITE);
     evbuffer_add_printf(bufferevent_get_output(bev), "%s", data);
     bufferevent_socket_connect_hostname(

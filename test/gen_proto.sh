@@ -1,5 +1,6 @@
 #!/bin/bash
-SRC=../proto
-#protoc --cpp_out ../ $SRC/protoc/iboxpay_payment.proto $SRC/cup_payment.proto
-protoc --java_out=. -I=$SRC $SRC/iboxpay_payment.proto $SRC/cup_payment.proto
-protoc --python_out=. -I=$SRC $SRC/cup_payment.proto
+SRC_DIR=../proto
+DST_DIR=.
+#protoc --cpp_out ../ $SRC_DIR/protoc/iboxpay_payment.proto $SRC_DIR/cup_payment.proto
+protoc --java_out=$DST_DIR -I=$SRC_DIR $SRC_DIR/iboxpay_payment.proto $SRC_DIR/cup_payment.proto
+protoc --python_out=$DST_DIR -I=$SRC_DIR $SRC_DIR/cup_payment.proto

@@ -1,29 +1,46 @@
 package cup;
 
 option java_package = "com.unionpay.payment";
+message Header {
+	required uint32 length = 1;
+	required uint32 msg_id = 2;
+    }
 
 message SaleRequest {
-	required int32  cmdType			= 1; 	// CMD命令
-	required int32  signType		= 2;	// 加密方式
-	required string terminalNo 		= 3;	// 盒子ID
-	required string merchantNo		= 4; 	// 商户号
-	required string terminalNum		= 5; 	// 终端号
-	required string trackBathNo		= 6;	// 磁道公钥索引号
-	required string pinBathNo		= 7;	// PIN公钥索引号
-	required bool   isPinExist		= 8;	// 判断PIN是否存在，适用于信用卡
+	required int32  cmd_type			= 1;	// CMD命令
+	required int32  sign_type		= 2;	// 加密方式
+	required string terminal_no 		= 3;	// 盒子ID
+	required string merchant_no		= 4;	// 商户号
+	required string terminal_num		= 5;	// 终端号
+	required string track_bath_no		= 6;	// 磁道公钥索引号
+	required string pin_bath_no		= 7;	// PIN公钥索引号
+	required bool   is_pin_exist		= 8;	// 判断PIN是否存在，适用于信用卡
 	required string track			= 9;	// 2磁道信息
 	required string pin			= 10;	// RSA加密的PIN信息
-	required string transAmount		= 11;	// 交易金额
+	required string trans_amount		= 11;	// 交易金额
 	required string currency		= 12;	// 货币代码
-	required string orderSerial		= 13;	// 订单流水号
-	required string clearMerchantNo 	= 14;	// 清算商户号
-	required string	sysRefNo		= 15;	// 系统参考号 用于结算对账
+	required string order_serial		= 13;	// 订单流水号
+	required string clear_merchant_no	= 14;	// 清算商户号
+	required string	sys_ref_no		= 15;	// 系统参考号 用于结算对账
 }
 
-message SaleResponse {
-	required string responseCode 	= 1;	// 响应码
-	required string cupCode		= 2;	// cup码(银联回应码)
-	required string errorCode	= 3;	// 错误信息
-	required string transTime	= 4;	// 交易时间
+message BaseResponse {
+	required string response_code 	= 1;	// 响应码
+	optional string cup_code	= 2;	// cup码(银联回应码)
+	optional string error_code	= 3;	// 错误信息
+	required string trans_time	= 4;	// 交易时间
+}
+
+message UnSaleRequst {
+	required int32  cmd_type    = 1;    // CMD命令
+	required int32  sign_type   = 2;    // 加密方式
+	required string terminal_no = 3;    // 盒子ID
+}
+
+message RevertSaleRequst {
+	required int32  cmd_type	  = 1;    // CMD命令
+	required int32  sign_type	  = 2;    // 加密方式
+	required int32  pay_type	  = 3;    // 冲正交易类型
+	required string terminal_no	  = 4;    // 盒子ID
 }
 

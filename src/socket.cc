@@ -103,6 +103,7 @@ static void backend_cb(struct bufferevent* bev, void* ctx) {
     puts(">>>");
 
     evhtp_headers_add_header(req->headers_out, evhtp_header_new("Server", server_name, 0, 0));
+    //evhtp_headers_add_header(req->headers_out, evhtp_header_new("Content-Type", "application/binary", 0, 0));
     evhtp_headers_add_header(req->headers_out, evhtp_header_new("Content-Type", "text/plain", 0, 0));
     evhtp_headers_add_header(req->headers_out, evhtp_header_new("Connection", "Keep-Alive", 0, 0));
 

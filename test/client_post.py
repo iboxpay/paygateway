@@ -23,7 +23,7 @@ sale_req.pin			= "4234322545"
 sale_req.transAmount		= "10000"
 sale_req.currency		= "155"
 sale_req.orderSerial		= "3423423423423"
-sale_req.clearMerchantNo	= "fdsfdsfsf"
+#sale_req.clearMerchantNo	= "fdsfdsfsf"
 sale_req.sysRefNo		= "fsdfd"
 
 requestData = base64.urlsafe_b64encode(sale_req.SerializeToString())

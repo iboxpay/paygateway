@@ -15,9 +15,20 @@ TODO
 * Add more proto file
 * Add queue.
 
+Architecture
+------------
+
+                          protobuf
+       +----------------+   http     +---------------+ iso8583 +----------------+
+       |                +----------> |               | socket  |                |
+       |    router      |            |  paygateway   +-------> |3party channel  |
+       |                | <----------+               <-------+-+                |
+       +----------------+            +---------------+         +----------------+
+
+
 Install in Linux/Mac OS
 ------------
-Make sure your cmake version >= 2.8
+Make sure your cmake version >= 2.6
 
    $ cmake .
    $ make

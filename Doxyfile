@@ -31,7 +31,7 @@ PROJECT_NAME           = paygateway
 # This could be handy for archiving the generated documentation or 
 # if some version control system is used.
 
-PROJECT_NUMBER         = 0.3.7
+PROJECT_NUMBER         = 0.1.0
 
 # The OUTPUT_DIRECTORY tag is used to specify the (relative or absolute) 
 # base path where the generated documentation will be put. 
@@ -590,7 +590,7 @@ WARN_LOGFILE           =
 # directories like "/usr/src/myproject". Separate the files or directories 
 # with spaces.
 
-INPUT                  = httpd.cc  iboxpay.payment.pb.cc  init_daemon.cc  main.cc  socket.cc  httpd.h  iboxpay.payment.pb.h  socket.h
+INPUT                  = src/httpd.cc  src/iboxpay.payment.pb.cc  src/init_daemon.cc  src/main.cc  src/socket.cc  src/httpd.h  src/iboxpay.payment.pb.h  src/socket.h
 
 # This tag can be used to specify the character encoding of the source files 
 # that doxygen parses. Internally doxygen uses the UTF-8 encoding, which is 

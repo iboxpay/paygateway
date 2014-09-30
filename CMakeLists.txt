@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 2.8)
+cmake_minimum_required(VERSION 2.6)
 project(paygateway)
 
 set(PROJECT_MAJOR_VERSION 1)
@@ -77,7 +77,7 @@ message("Rel CFLAGS: ${CMAKE_C_FLAGS_RELEASE}")
 find_package(LibEvent REQUIRED)
 find_package(OpenSSL)
 find_package(libevhtp REQUIRED)
- find_package(Protobuf REQUIRED)
+find_package(Protobuf REQUIRED)
 
 find_path(LIBEVENT_INCLUDE_DIR event2/event.h REQUIRED)
 

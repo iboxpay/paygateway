@@ -163,8 +163,8 @@ void router_request_cb(evhtp_request_t* req, void* arg) {
     std::string decoded = base64_decode(encoded);
     cup::SaleRequest sale_req;
     sale_req.ParseFromString(decoded);
-    std::cout << sale_req.cmdtype() << std::endl;
-    std::cout << sale_req.signtype() << std::endl;
+    std::cout << sale_req.cmd_type() << std::endl;
+    std::cout << sale_req.sign_type() << std::endl;
 
 
     /* Pause the router request while we run the backend requests. */
